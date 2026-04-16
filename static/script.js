@@ -108,13 +108,13 @@ function uploadFile() {
 }
 
 // =======================
-// 🔥 SHOW RESULT (GIỮ NGUYÊN)
+// 🔥 SHOW RESULT
 // =======================
 function showResult(data) {
     let html = "";
-
-    // hỗ trợ cả OLD + NEW
     let results = data.results || data.details || [];
+
+    html += `<h3>🔍 KẾT QUẢ PHÂN TÍCH</h3>`;
 
     results.forEach(r => {
         let color = "green";
@@ -122,26 +122,50 @@ function showResult(data) {
         if (r.status === "VULNERABLE" || r.status === "MALICIOUS") color = "red";
         else if (r.status === "POSSIBLE" || r.status === "SUSPICIOUS") color = "orange";
 
-        html += `<p style="color:${color}">
-                    ${r.type || "Scan"} : ${r.status}
-                 </p>`;
+        html += `<p style="color:${color}">${r.type} : ${r.status}</p>`;
     });
 
-    // thêm summary cho NEW system
-    if (data.status) {
-        html += `<hr>
-                 <p><b>Final Status:</b> ${data.status}</p>
-                 <p><b>Score:</b> ${data.score || 0}</p>`;
+    html += `<hr><h4>🧠 ĐÁNH GIÁ DỄ HIỂU</h4>`;
+
+    let explanation = "";
+    let advice = "";
+    let finalStatus = data.status || "UNKNOWN";
+
+    if (finalStatus === "CLEAN" || finalStatus === "SAFE") {
+        explanation = "Hệ thống không phát hiện dấu hiệu nguy hiểm.";
+        advice = "Có thể sử dụng nhưng vẫn nên cẩn thận.";
+    }
+    else if (finalStatus === "SUSPICIOUS") {
+        explanation = "Có dấu hiệu bất thường.";
+        advice = "Không nên nhập thông tin quan trọng.";
+    }
+    else if (finalStatus === "MALICIOUS") {
+        explanation = "Phát hiện nguy hiểm.";
+        advice = "KHÔNG nên sử dụng.";
+    }
+    else {
+        explanation = "Không đủ dữ liệu.";
+        advice = "Hãy cẩn trọng.";
+    }
+
+    html += `
+        <p><b>Kết luận:</b> ${finalStatus}</p>
+        <p><b>Mô tả:</b> ${explanation}</p>
+        <p><b>Khuyến nghị:</b> ${advice}</p>
+    `;
+
+    if (data.score !== undefined) {
+        html += `<p><b> Điểm:</b> ${data.score}/100</p>`;
     }
 
     document.getElementById("result").innerHTML = html;
 
     document.getElementById("progress-bar").style.width = "100%";
-    document.getElementById("progress-text").innerText = "100% - Hoàn thành";
+    document.getElementById("progress-text").innerText = "100%";
 }
 
 // =======================
-// 🔥 PROGRESS (UPGRADE)
+// 🔥 PROGRESS
 // =======================
 function trackProgress() {
     let interval = setInterval(() => {
@@ -153,15 +177,13 @@ function trackProgress() {
             document.getElementById("progress-bar").style.width = percent + "%";
             document.getElementById("progress-text").innerText = percent + "%";
 
-            if (percent >= 100) {
-                clearInterval(interval);
-            }
+            if (percent >= 100) clearInterval(interval);
         });
     }, 300);
 }
 
 // =======================
-// 🔥 NEWS (GIỮ NGUYÊN)
+// 🔥 NEWS
 // =======================
 async function loadNews() {
     try {
@@ -178,14 +200,11 @@ async function loadNews() {
             card.className = "card";
 
             card.innerHTML = `
-                <img src="${item.image || 'https://via.placeholder.com/300x150'}" alt="${item.title}">
+                <img src="${item.image || 'https://via.placeholder.com/300x150'}">
                 <p>${item.title}</p>
             `;
 
-            card.onclick = () => {
-                window.open(item.link, "_blank");
-            };
-
+            card.onclick = () => window.open(item.link, "_blank");
             container.appendChild(card);
         });
 
@@ -194,82 +213,62 @@ async function loadNews() {
     }
 }
 
-window.onload = () => {
-    loadNews();
-};
-
 // =======================
-// 🔥 CHAT (GIỮ NGUYÊN)
+// 🔥 CHAT
 // =======================
 function toggleChat() {
     const box = document.getElementById("chat-box");
     box.style.display = box.style.display === "flex" ? "none" : "flex";
 }
 
-function showResult(data) {
-    let html = "";
+async function sendMessage() {
+    const input = document.getElementById("chat-input");
+    const content = document.getElementById("chat-content");
 
-    let results = data.results || data.details || [];
+    let text = input.value.trim();
+    if (!text) return;
 
-    html += `<h3 style="margin-bottom:10px;">🔍 KẾT QUẢ PHÂN TÍCH</h3>`;
+    content.innerHTML += `<div class="msg-user">${text}</div>`;
+    input.value = "";
 
-    // =========================
-    // 🔧 PHẦN KỸ THUẬT (GIỮ NGUYÊN)
-    // =========================
-    results.forEach(r => {
-        let color = "green";
+    const loadingId = "loading-" + Date.now();
+    content.innerHTML += `<div id="${loadingId}" class="msg-bot">🤖 Đang suy nghĩ...</div>`;
 
-        if (r.status === "VULNERABLE" || r.status === "MALICIOUS") color = "red";
-        else if (r.status === "POSSIBLE" || r.status === "SUSPICIOUS") color = "orange";
+    content.scrollTop = content.scrollHeight;
 
-        html += `<p style="color:${color}">
-                    ${r.type} : ${r.status}
-                 </p>`;
-    });
+    try {
+        const res = await fetch("/ask_ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
 
-    // =========================
-    // 🧠 PHẦN GIẢI THÍCH DỄ HIỂU
-    // =========================
-    html += `<hr><h4>🧠 ĐÁNH GIÁ DỄ HIỂU</h4>`;
+        const data = await res.json();
 
-    let explanation = "";
-    let advice = "";
+        let formatted = (data.response || "Không có phản hồi")
+            .replace(/\n/g, "<br>");
 
-    let finalStatus = data.status || "UNKNOWN";
+        document.getElementById(loadingId).innerHTML = `🤖 ${formatted}`;
 
-    if (finalStatus === "CLEAN" || finalStatus === "SAFE") {
-        explanation = "Hệ thống không phát hiện dấu hiệu nguy hiểm. File/Website này có vẻ an toàn để sử dụng.";
-        advice = "Bạn có thể tiếp tục sử dụng, nhưng vẫn nên cẩn thận khi nhập thông tin cá nhân.";
-    }
-    else if (finalStatus === "SUSPICIOUS") {
-        explanation = "Có một số dấu hiệu bất thường. Chưa chắc là nguy hiểm nhưng có rủi ro.";
-        advice = "Không nên nhập mật khẩu hoặc thông tin quan trọng. Hãy kiểm tra thêm trước khi sử dụng.";
-    }
-    else if (finalStatus === "MALICIOUS") {
-        explanation = "Phát hiện dấu hiệu nguy hiểm. File/Website này có thể chứa mã độc hoặc lừa đảo.";
-        advice = "KHÔNG nên mở hoặc truy cập. Nên xóa file hoặc tránh truy cập ngay lập tức.";
-    }
-    else {
-        explanation = "Không đủ dữ liệu để đánh giá chính xác.";
-        advice = "Hãy cẩn trọng khi sử dụng.";
+    } catch (err) {
+        document.getElementById(loadingId).innerHTML = "❌ Lỗi AI";
     }
 
-    html += `
-        <p><b> Kết luận:</b> ${finalStatus}</p>
-        <p><b> Mô tả:</b> ${explanation}</p>
-        <p><b>️ Khuyến nghị:</b> ${advice}</p>
-    `;
-
-    // =========================
-    // 📊 SCORE (GIỮ)
-    // =========================
-    if (data.score !== undefined) {
-        html += `<p><b> Điểm an toàn:</b> ${data.score}/100</p>`;
-    }
-
-    document.getElementById("result").innerHTML = html;
-
-    document.getElementById("progress-bar").style.width = "100%";
-    document.getElementById("progress-text").innerText = "100% - Hoàn thành";
-
+    content.scrollTop = content.scrollHeight;
 }
+
+// =======================
+// 🔥 INIT (QUAN TRỌNG)
+// =======================
+window.onload = () => {
+    loadNews();
+
+    const input = document.getElementById("chat-input");
+
+    input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+};
