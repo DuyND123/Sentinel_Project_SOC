@@ -1,0 +1,124 @@
+[
+    {
+        "date": "16/04/2026 09:38:12",
+        "type": "FILE",
+        "target": "CrystalDiskInfo9_7_2Ads.exe",
+        "status": "CLEAN",
+        "score": 0,
+        "details": [
+            {
+                "type": "File Scan",
+                "status": "CLEAN"
+            },
+            {
+                "type": "Signature Check",
+                "status": "CLEAN"
+            }
+        ]
+    },
+    {
+        "date": "15/04/2026 08:58:46",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "CLEAN",
+        "score": 0,
+        "details": [
+            {
+                "type": "File Scan",
+                "status": "CLEAN"
+            },
+            {
+                "type": "Signature Check",
+                "status": "CLEAN"
+            }
+        ]
+    },
+    {
+        "date": "14/04/2026 21:08:36",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:36",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:36",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:36",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:35",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:35",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:35",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:34",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:34",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:34",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    },
+    {
+        "date": "14/04/2026 21:08:33",
+        "type": "FILE",
+        "target": "Study ENW Writing.docx",
+        "status": "SAFE",
+        "score": 0,
+        "details": []
+    }
+]

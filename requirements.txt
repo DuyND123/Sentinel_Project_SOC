@@ -1,0 +1,17 @@
+flask==3.0.0
+google-generativeai==0.7.2
+feedparser==6.0.11
+
+requests==2.31.0
+beautifulsoup4==4.12.3
+dnspython==2.6.1
+python-whois==0.9.6
+
+pefile==2023.2.7
+oletools==0.60.1
+pypdf==4.2.0
+
+flask-limiter==3.5.0
+flask-talisman==1.1.0
+
+python-magic-bin==0.4.14

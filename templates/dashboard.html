@@ -1,0 +1,17 @@
+<h2>Scan History</h2>
+
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>URL</th>
+    <th>Result</th>
+</tr>
+
+{% for s in scans %}
+<tr>
+    <td>{{ s[0] }}</td>
+    <td>{{ s[1] }}</td>
+    <td>{{ s[2] }}</td>
+</tr>
+{% endfor %}
+</table>

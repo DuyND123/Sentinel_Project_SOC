@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentinel Security Center</title>
+
+    <!-- FIX STATIC -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="uni-header">
+    <div class="uni-left">
+        <img src="{{ url_for('static', filename='logofpt.png') }}" class="uni-logo" alt="FPT Logo">
+        <div class="uni-text">
+            <h3>FPT UNIVERSITY</h3>
+        </div>
+    </div>
+
+    <div class="uni-right">
+        <div class="user-info">
+            <img src="{{ url_for('static', filename='avatar.png') }}" class="avatar" alt="Avatar">
+            <div class="user-text">
+                <p class="name">Nguyễn Đức Duy</p>
+                <p class="role">Security Analyst</p>
+                <p class="id">MSSV: SE193665</p>
+            </div>
+        </div>
+        <div class="badge">🛡 SOC PROJECT</div>
+    </div>
+</div>
+
+<hr>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="navbar">
+        <div class="logo">🛡 SENTINEL</div>
+    </div>
+
+    <h1>KIỂM TRA AN TOÀN THÔNG TIN</h1>
+    <p>Hệ thống phân tích lỗ hổng Website & Mã độc tập tin</p>
+
+    <!-- TAB -->
+    <div class="tabs">
+        <button id="tab-url" class="active" onclick="switchTab('url')">Quét URL</button>
+        <button id="tab-file" onclick="switchTab('file')">Quét File</button>
+    </div>
+
+    <!-- URL -->
+    <div id="url-box" class="search-box">
+        <label for="url" style="display:none;">URL</label>
+        <input id="url" type="text" placeholder="Nhập URL...">
+        <button onclick="startScan()">SCAN</button>
+    </div>
+
+    <!-- FILE -->
+    <div id="file-box" class="upload-box" style="display:none;">
+        <label for="fileInput" style="display:none;">Upload File</label>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">UPLOAD & SCAN</button>
+    </div>
+</div>
+
+<!-- NEWS -->
+<div class="news">
+    <h2>| TIN TỨC BẢO MẬT</h2>
+    <div id="news-container" class="news-grid"></div>
+</div>
+
+<!-- RESULT -->
+<div class="container">
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="result" class="result-box"></div>
+</div>
+
+<!-- FIX STATIC JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<!-- CHAT BUTTON -->
+<div id="chat-toggle" onclick="toggleChat()">💬</div>
+
+<!-- CHAT BOX -->
+<div id="chat-box">
+    <div class="chat-header">
+        <span>🤖 Sentinel AI</span>
+        <button onclick="toggleChat()">✖</button>
+    </div>
+
+    <div id="chat-content" class="chat-content"></div>
+
+    <div class="chat-input">
+        <label for="chat-input" style="display:none;">Chat</label>
+        <input id="chat-input" type="text" placeholder="Nhập câu hỏi...">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+</div>
+
+</body>
+</html>

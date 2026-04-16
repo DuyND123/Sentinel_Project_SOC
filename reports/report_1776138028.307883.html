@@ -1,0 +1,14 @@
+
+    <html>
+    <head>
+    <style>
+    body { font-family: Arial; background:#111; color:#fff; }
+    .card { padding:15px; margin:10px; border-radius:10px; }
+    .HIGH { background:red; }
+    .MEDIUM { background:orange; }
+    .LOW { background:green; }
+    </style>
+    </head>
+    <body>
+    <h1>Sentinel Report</h1>
+    <div class='card LOW'><h3>SQL Injection</h3><p>Status: SAFE</p><p>Severity: LOW</p></div><div class='card LOW'><h3>XSS</h3><p>Status: SAFE</p><p>Severity: LOW</p></div><div class='card MEDIUM'><h3>CSRF</h3><p>Status: POSSIBLE</p><p>Severity: MEDIUM</p></div><div class='card MEDIUM'><h3>IDOR</h3><p>Status: POSSIBLE</p><p>Severity: MEDIUM</p></div><div class='card HIGH'><h3>Weak Auth</h3><p>Status: VULNERABLE</p><p>Severity: HIGH</p></div></body></html>
