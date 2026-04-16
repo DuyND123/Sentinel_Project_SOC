@@ -242,10 +242,13 @@ body {
     transition: width 0.4s ease;
 }
 
+.result-box h4 {
+    margin-top: 15px;
+    color: #1d4ed8;
+}
+
 .result-box p {
-    font-size: 14px;
-    margin: 6px 0;
-    font-weight: 500;
+    line-height: 1.5;
 }
 
 /* CHAT */
