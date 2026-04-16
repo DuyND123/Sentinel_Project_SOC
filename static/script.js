@@ -18,22 +18,48 @@ function switchTab(mode) {
     }
 }
 
+// =======================
+// 🔥 HELPER UI
+// =======================
+function setLoading(isLoading) {
+    const urlBtn = document.querySelector("#url-box button");
+    const fileBtn = document.querySelector("#file-box button");
+
+    if (isLoading) {
+        urlBtn.innerText = "Scanning...";
+        fileBtn.innerText = "Uploading...";
+        urlBtn.disabled = true;
+        fileBtn.disabled = true;
+    } else {
+        urlBtn.innerText = "SCAN";
+        fileBtn.innerText = "UPLOAD & SCAN";
+        urlBtn.disabled = false;
+        fileBtn.disabled = false;
+    }
+}
+
+function resetProgress() {
+    document.getElementById("progress-bar").style.width = "0%";
+    document.getElementById("progress-text").innerText = "0%";
+}
+
+// =======================
 // 🔥 SCAN URL
+// =======================
 function startScan() {
     let url = document.getElementById("url").value;
-    let btn = document.getElementById("scan-btn");
 
     if (!url) {
         alert("Nhập URL trước!");
         return;
     }
 
-    btn.innerText = "Scanning...";
-    btn.disabled = true;
+    setLoading(true);
+    resetProgress();
 
     document.getElementById("result").innerHTML = "⏳ Scanning...";
 
-    fetch("/scan", {
+    fetch("/scan_url", {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -43,14 +69,15 @@ function startScan() {
     .then(res => res.json())
     .then(data => {
         showResult(data);
-        btn.innerText = "SCAN";
-        btn.disabled = false;
+        setLoading(false);
     });
 
     trackProgress();
 }
 
+// =======================
 // 🔥 UPLOAD FILE
+// =======================
 function uploadFile() {
     let file = document.getElementById("fileInput").files[0];
 
@@ -58,6 +85,9 @@ function uploadFile() {
         alert("Chọn file trước!");
         return;
     }
+
+    setLoading(true);
+    resetProgress();
 
     document.getElementById("result").innerHTML = "⏳ Uploading & scanning...";
 
@@ -69,46 +99,70 @@ function uploadFile() {
         body: formData
     })
     .then(res => res.json())
-    .then(data => showResult(data));
+    .then(data => {
+        showResult(data);
+        setLoading(false);
+    });
+
+    trackProgress();
 }
 
-// 🔥 SHOW RESULT
+// =======================
+// 🔥 SHOW RESULT (GIỮ NGUYÊN)
+// =======================
 function showResult(data) {
     let html = "";
 
-    data.results.forEach(r => {
+    // hỗ trợ cả OLD + NEW
+    let results = data.results || data.details || [];
+
+    results.forEach(r => {
         let color = "green";
 
-        if (r.status === "VULNERABLE") color = "red";
-        else if (r.status === "POSSIBLE") color = "orange";
+        if (r.status === "VULNERABLE" || r.status === "MALICIOUS") color = "red";
+        else if (r.status === "POSSIBLE" || r.status === "SUSPICIOUS") color = "orange";
 
         html += `<p style="color:${color}">
-                    ${r.type} : ${r.status}
+                    ${r.type || "Scan"} : ${r.status}
                  </p>`;
     });
 
+    // thêm summary cho NEW system
+    if (data.status) {
+        html += `<hr>
+                 <p><b>Final Status:</b> ${data.status}</p>
+                 <p><b>Score:</b> ${data.score || 0}</p>`;
+    }
+
     document.getElementById("result").innerHTML = html;
+
+    document.getElementById("progress-bar").style.width = "100%";
+    document.getElementById("progress-text").innerText = "100% - Hoàn thành";
 }
 
-// 🔥 PROGRESS
+// =======================
+// 🔥 PROGRESS (UPGRADE)
+// =======================
 function trackProgress() {
     let interval = setInterval(() => {
         fetch("/progress")
         .then(res => res.json())
         .then(data => {
-            document.getElementById("progress-bar").style.width =
-                data.progress + "%";
+            let percent = data.progress;
 
-            if (data.progress >= 100) clearInterval(interval);
+            document.getElementById("progress-bar").style.width = percent + "%";
+            document.getElementById("progress-text").innerText = percent + "%";
+
+            if (percent >= 100) {
+                clearInterval(interval);
+            }
         });
     }, 300);
 }
 
 // =======================
-// 🔥 SECURITY NEWS SYSTEM
+// 🔥 NEWS (GIỮ NGUYÊN)
 // =======================
-
-// load news từ backend
 async function loadNews() {
     try {
         const res = await fetch("/api/news");
@@ -128,7 +182,6 @@ async function loadNews() {
                 <p>${item.title}</p>
             `;
 
-            // 👉 click mở bài báo thật
             card.onclick = () => {
                 window.open(item.link, "_blank");
             };
@@ -141,11 +194,13 @@ async function loadNews() {
     }
 }
 
-// auto load khi vào trang
 window.onload = () => {
     loadNews();
 };
 
+// =======================
+// 🔥 CHAT (GIỮ NGUYÊN)
+// =======================
 function toggleChat() {
     const box = document.getElementById("chat-box");
     box.style.display = box.style.display === "flex" ? "none" : "flex";
@@ -158,10 +213,8 @@ function sendMessage() {
     let text = input.value.trim();
     if (!text) return;
 
-    // user message
     content.innerHTML += `<div class="msg-user">${text}</div>`;
 
-    // fake AI response (demo)
     setTimeout(() => {
         content.innerHTML += `<div class="msg-bot">🤖 Đang phân tích: "${text}"...</div>`;
         content.scrollTop = content.scrollHeight;

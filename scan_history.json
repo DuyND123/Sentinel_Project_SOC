@@ -1,5 +1,144 @@
 [
     {
+        "date": "16/04/2026 10:04:37",
+        "type": "URL",
+        "target": "https://www.facebook.com/",
+        "status": "CLEAN",
+        "score": 100,
+        "details": [
+            {
+                "type": "DNS Check",
+                "status": "SAFE"
+            },
+            {
+                "type": "SSL Certificate",
+                "status": "SAFE"
+            },
+            {
+                "type": "Phishing Pattern",
+                "status": "SAFE"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:59:01",
+        "type": "URL",
+        "target": "https://viet69.mu/",
+        "status": "CLEAN",
+        "score": 100,
+        "details": [
+            {
+                "type": "DNS Check",
+                "status": "SAFE"
+            },
+            {
+                "type": "SSL Certificate",
+                "status": "SAFE"
+            },
+            {
+                "type": "Phishing Pattern",
+                "status": "SAFE"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:58:37",
+        "type": "URL",
+        "target": "https://www.tubepornstars.com/vi/pornstar/luna-doll",
+        "status": "CLEAN",
+        "score": 80,
+        "details": [
+            {
+                "type": "DNS Check",
+                "status": "SAFE"
+            },
+            {
+                "type": "SSL Certificate",
+                "status": "POSSIBLE"
+            },
+            {
+                "type": "Phishing Pattern",
+                "status": "SAFE"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:58:12",
+        "type": "FILE",
+        "target": "CrystalDiskInfo9_7_2Ads.exe",
+        "status": "CLEAN",
+        "score": 0,
+        "details": [
+            {
+                "type": "File Scan",
+                "status": "CLEAN"
+            },
+            {
+                "type": "Signature Check",
+                "status": "CLEAN"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:57:15",
+        "type": "URL",
+        "target": "https://www.tubepornstars.com/vi/pornstar/luna-doll",
+        "status": "CLEAN",
+        "score": 80,
+        "details": [
+            {
+                "type": "DNS Check",
+                "status": "SAFE"
+            },
+            {
+                "type": "SSL Certificate",
+                "status": "POSSIBLE"
+            },
+            {
+                "type": "Phishing Pattern",
+                "status": "SAFE"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:56:34",
+        "type": "URL",
+        "target": "https://www.facebook.com/",
+        "status": "CLEAN",
+        "score": 100,
+        "details": [
+            {
+                "type": "DNS Check",
+                "status": "SAFE"
+            },
+            {
+                "type": "SSL Certificate",
+                "status": "SAFE"
+            },
+            {
+                "type": "Phishing Pattern",
+                "status": "SAFE"
+            }
+        ]
+    },
+    {
+        "date": "16/04/2026 09:48:19",
+        "type": "FILE",
+        "target": "CrystalDiskInfo9_7_2Ads.exe",
+        "status": "CLEAN",
+        "score": 0,
+        "details": [
+            {
+                "type": "File Scan",
+                "status": "CLEAN"
+            },
+            {
+                "type": "Signature Check",
+                "status": "CLEAN"
+            }
+        ]
+    },
+    {
         "date": "16/04/2026 09:38:12",
         "type": "FILE",
         "target": "CrystalDiskInfo9_7_2Ads.exe",

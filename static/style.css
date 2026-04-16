@@ -220,27 +220,32 @@ body {
 
 /* RESULT */
 .container {
-    width: 60%;
-    margin: 30px auto;
+    width: 65%;
+    margin: -40px auto 30px; /* kéo lên gần hero */
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .progress-container {
-    height: 18px;
+    height: 20px;
     background: #e2e8f0;
     border-radius: 10px;
+    overflow: hidden;
 }
 
 #progress-bar {
     height: 100%;
     width: 0;
     background: linear-gradient(90deg, #1d4ed8, #38bdf8);
+    transition: width 0.4s ease;
 }
 
-.result-box {
-    margin-top: 20px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+.result-box p {
+    font-size: 14px;
+    margin: 6px 0;
+    font-weight: 500;
 }
 
 /* CHAT */
@@ -306,4 +311,22 @@ body {
 
 .msg-bot {
     text-align: left;
+}
+
+/* PROGRESS TEXT */
+#progress-text {
+    font-size: 13px;
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+/* SMOOTH PROGRESS */
+#progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* BUTTON DISABLED */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

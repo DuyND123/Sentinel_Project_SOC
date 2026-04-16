@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify
 
 # ================== OLD SYSTEM ==================
 from scanner.core import run_scan
-from scanner.progress import get
+from scanner.progress import get, set_progress  # ✅ FIX
 from report.generator import generate_html_report
 from database.db import init_db, save_scan, get_scans
 
@@ -23,7 +23,7 @@ import feedparser
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
-# ================== GEMINI (SAFE MODE) ==================
+# ================== GEMINI ==================
 try:
     import google.generativeai as genai
 
@@ -52,13 +52,11 @@ if SecurityScanner:
         scanner = None
 
 # ================== STATUS SYSTEM ==================
-
 FILE_STATUSES = ["CLEAN", "SUSPICIOUS", "MALICIOUS", "UNKNOWN"]
 
 def evaluate_file_status(result: dict) -> str:
     score = result.get("score", 0)
 
-    # Ưu tiên status từ scanner
     if "status" in result:
         status = result["status"].upper()
 
@@ -69,7 +67,6 @@ def evaluate_file_status(result: dict) -> str:
         elif status == "SUSPICIOUS":
             return "SUSPICIOUS"
 
-    # fallback theo score
     if score >= 80:
         return "MALICIOUS"
     elif score >= 40:
@@ -80,7 +77,6 @@ def evaluate_file_status(result: dict) -> str:
         return "CLEAN"
 
 # ================== HISTORY ==================
-
 HISTORY_FILE = os.path.join(str(app.root_path), "scan_history.json")
 
 if not os.path.exists(HISTORY_FILE):
@@ -128,8 +124,12 @@ def scan():
     if not url:
         return jsonify({"error": "Missing URL"}), 400
 
+    set_progress(0)  # ✅ FIX
+
     results = run_scan(url)
     report_file = generate_html_report(results)
+
+    set_progress(100)  # ✅ đảm bảo hoàn tất
 
     save_scan(url, results)
     save_to_history("URL", url, {"details": results, "score": 0})
@@ -149,16 +149,31 @@ def scan_url_new():
     if not url:
         return jsonify({"error": "Missing URL"}), 400
 
-    result = scanner.scan_url(url)
+    print(f"[SCAN] URL: {url}")
 
-    # chuẩn hóa status
-    result["status"] = evaluate_file_status(result)
+    try:
+        set_progress(0)  # ✅ RESET
 
-    save_to_history("URL", url, result)
+        result = scanner.scan_url(url)
 
-    return jsonify(result)
+        if not result:
+            set_progress(100)
+            return jsonify({"error": "Scan failed"}), 500
 
-# ---------- UPLOAD (BASIC) ----------
+        result["status"] = evaluate_file_status(result)
+
+        set_progress(100)  # ✅ đảm bảo end
+
+        save_to_history("URL", url, result)
+
+        return jsonify(result)
+
+    except Exception as e:
+        print("Scan URL error:", e)
+        set_progress(100)
+        return jsonify({"error": "Scan crashed"}), 500
+
+# ---------- UPLOAD BASIC ----------
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files.get("file")
@@ -170,10 +185,14 @@ def upload():
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
 
+    set_progress(0)
+
     results = [
         {"type": "File Scan", "status": "CLEAN"},
         {"type": "Signature Check", "status": "CLEAN"}
     ]
+
+    set_progress(100)
 
     final_result = {
         "score": 0,
@@ -194,19 +213,28 @@ def scan_file_new():
     if "file" not in request.files:
         return jsonify({"error": "Missing file"}), 400
 
-    file = request.files["file"]
-    filename = file.filename or "uploaded_file"
+    try:
+        set_progress(0)  # ✅ RESET
 
-    file_stream = cast(IO[bytes], file.stream)
+        file = request.files["file"]
+        filename = file.filename or "uploaded_file"
 
-    result = scanner.scan_file_deep(file_stream, filename)
+        file_stream = cast(IO[bytes], file.stream)
 
-    # chuẩn hóa status
-    result["status"] = evaluate_file_status(result)
+        result = scanner.scan_file_deep(file_stream, filename)
 
-    save_to_history("FILE", filename, result)
+        result["status"] = evaluate_file_status(result)
 
-    return jsonify(result)
+        set_progress(100)
+
+        save_to_history("FILE", filename, result)
+
+        return jsonify(result)
+
+    except Exception as e:
+        print("Scan file error:", e)
+        set_progress(100)
+        return jsonify({"error": "File scan crashed"}), 500
 
 # ---------- PROGRESS ----------
 @app.route("/progress")
