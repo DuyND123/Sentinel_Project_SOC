@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, jsonify
 
 # ================== OLD SYSTEM ==================
 from scanner.core import run_scan
-from scanner.progress import get, set_progress  # ✅ FIX
+from scanner.progress import get, set_progress  
 from report.generator import generate_html_report
 from database.db import init_db, save_scan, get_scans
 
